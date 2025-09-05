@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dipanshu Nonare | Photography Portfolio</title>
+  <meta name="description" content="Official portfolio of photographer Dipanshu Nonare. Weddings, portraits, events, slow edits, cinematic films & more."/>
+  <style>
+    /* ------------------------------
+       CSS VARIABLES & THEME SETUP
+    -------------------------------*/
+    :root {
+      --bg: #0b0f14;           /* dark base */
+      --surface: rgba(255,255,255,0.04);
+      --surface-2: rgba(255,255,255,0.08);
+      --text: #e5e7eb;
+      --muted: #9aa4b2;
+      --accent: #7dd3fc;       /* cyan */
+      --accent-2: #a78bfa;     /* violet */
+      --ok: #34d399;
+      --warn: #fbbf24;
+      --danger: #fb7185;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --glass: blur(10px) saturate(1.2);
+      --card-radius: 22px;
+      --ring: 0 0 0 2px rgba(125,211,252,.35), 0 0 40px rgba(167,139,250,.15);
+    }
+    .light {
+      --bg: #f8fafc;
+      --surface: rgba(15,23,42,0.06);
+      --surface-2: rgba(15,23,42,0.10);
+      --text: #0b1220;
+      --muted: #3f4a5a;
+      --accent: #0ea5e9;
+      --accent-2: #7c3aed;
+      --shadow: 0 10px 30px rgba(15,23,42,.15);
+      --ring: 0 0 0 2px rgba(14,165,233,.25), 0 0 40px rgba(124,58,237,.12);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(124,58,237,.08), transparent 60%),
+                  radial-gradient(1000px 700px at -10% 30%, rgba(14,165,233,.08), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      scroll-behavior: smooth;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img, video { max-width: 100%; display: block; }
+
+    /* ------------------------------
+       GLOBAL UTILITIES
+    -------------------------------*/
+    .container { width: min(1200px, 92vw); margin-inline: auto; }
+    .section { padding: 90px 0; position: relative; }
+    .glass { backdrop-filter: var(--glass); background: var(--surface); border: 1px solid rgba(255,255,255,.08); box-shadow: var(--shadow); border-radius: var(--card-radius); }
+    .btn { display:inline-flex; align-items:center; gap:.6rem; padding:.9rem 1.2rem; border-radius: 999px; border:1px solid rgba(255,255,255,.12); background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02)); cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, background .3s ease; }
+    .btn:hover { transform: translateY(-2px); box-shadow: var(--ring); }
+    .btn.ghost { background: transparent; }
+    .chip { padding:.4rem .8rem; border-radius:999px; background: var(--surface-2); border:1px solid rgba(255,255,255,.09); font-size:.85rem; color: var(--muted); }
+    .subtle { color: var(--muted); }
+
+    .title { font-size: clamp(28px, 5vw, 46px); letter-spacing:.3px; line-height:1.05; margin:0 0 10px; }
+    .para  { font-size: clamp(14px, 2vw, 18px); color: var(--muted); line-height:1.7; }
+
+    /* ------------------------------
+       LOADER (UPGRADED: intense black + 3D spinner + image)
+    -------------------------------*/
+    #loader {
+      position: fixed; inset: 0; z-index: 99999; display: grid; place-items: center;
+      background: #000; /* full intense black */
+      /* subtle purple / cyan glow off-black */
+      background-image:
+        radial-gradient(800px 400px at 10% -10%, rgba(124,58,237,.07), transparent 45%),
+        radial-gradient(700px 500px at 100% 110%, rgba(14,165,233,.06), transparent 45%);
+      will-change: opacity, visibility;
+    }
+    .spinner-wrap { display:grid; place-items:center; gap:20px; text-align:center; padding:40px; }
+    /* outer ring with soft depth */
+    .spinner-3d {
+      width: 140px; height: 140px; border-radius: 50%;
+      display:grid; place-items:center; position:relative;
+      transform-style: preserve-3d; perspective: 1200px;
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,.6));
+    }
+    .spinner-3d .ring {
+      position:absolute; inset:0; border-radius:50%;
+      background: conic-gradient(from 120deg, rgba(125,211,252,.07), rgba(167,139,250,.06));
+      border: 1px solid rgba(255,255,255,.04);
+      box-shadow: inset 0 10px 40px rgba(167,139,250,.03);
+      transform: translateZ(-18px) rotateX(60deg);
+      animation: ringSpin 3.5s linear infinite;
+    }
+    .spinner-3d .frame {
+      width: 100%; height: 100%; border-radius:50%; display:grid; place-items:center; position:relative; overflow:visible;
+      transform: rotateX(-18deg) rotateY(8deg);
+    }
+    .spinner-3d .spinner {
+      width: 84px; height: 84px; border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--accent), var(--accent-2));
+      -webkit-mask: radial-gradient(farthest-side, transparent 62%, #000 63%);
+              mask: radial-gradient(farthest-side, transparent 62%, #000 63%);
+      animation: spin 1.4s linear infinite, floaty 3.6s ease-in-out infinite;
+      filter: drop-shadow(0 0 30px rgba(125,211,252,.28));
+      display:grid; place-items:center; position:relative; z-index:2;
+    }
+    /* inner image circle */
+    .spinner-3d .photo {
+      position:absolute; width:72px; height:72px; border-radius:50%; overflow:hidden; z-index:3;
+      border: 2px solid rgba(255,255,255,.06); transform: translateZ(24px) rotateY(0deg);
+      background: #111;
+      display:grid; place-items:center;
+      animation: photoBreathe 4s ease-in-out infinite;
+    }
+    .spinner-3d .photo img { width:100%; height:100%; object-fit:cover; display:block; transform-origin:center; }
+
+    .loader-text { font-weight:600; letter-spacing:.3px; color:#bfc9d6; font-size:0.95rem; }
+
+    @keyframes spin { to { transform: rotate(1turn); } }
+    @keyframes ringSpin { 0%{ transform: translateZ(-18px) rotateX(60deg) rotate(0deg);} 100%{ transform: translateZ(-18px) rotateX(60deg) rotate(360deg);} }
+    @keyframes floaty { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-6px);} }
+    @keyframes photoBreathe { 0%{ transform: translateZ(24px) scale(1);} 50%{ transform: translateZ(26px) scale(1.03);} 100%{ transform: translateZ(24px) scale(1);} }
+
+    .fade-out { animation: fadeOut .45s cubic-bezier(.2,.9,.2,1) forwards; }
+    @keyframes fadeOut { to { opacity:0; visibility:hidden; } }
+
+    /* ------------------------------
+       HEADER / NAV
+    -------------------------------*/
+    header { position: sticky; top: 0; z-index: 50; backdrop-filter: var(--glass); background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,0)); border-bottom: 1px solid rgba(255,255,255,.06); }
+    .nav { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding: 12px 0; }
+    .brand { display:flex; align-items:center; gap:.8rem; }
+    .brand-logo { width:42px; height:42px; border-radius:50%; overflow:hidden; border: 1px solid rgba(255,255,255,.12); box-shadow: var(--shadow); }
+    .brand h1 { margin:0; font-size: 18px; letter-spacing:.4px; }
+    .brand h1 span { color: var(--accent); }
+
+    .nav-links { display:flex; align-items:center; gap: .6rem; flex-wrap: wrap; }
+    .nav-links a { padding:.6rem .9rem; border-radius: 999px; position:relative; overflow:hidden; }
+    .nav-links a::after { content:""; position:absolute; inset:0; background: radial-gradient(300px 120px at var(--x,50%) 120%, rgba(125,211,252,.18), transparent 60%); opacity:0; transition:opacity .25s ease; }
+    .nav-links a:hover::after { opacity:1; }
+
+    .controls { display:flex; align-items:center; gap:.6rem; }
+
+    /* HAMBURGER for mobile */
+    .hamburger {
+      width:44px; height:40px; display:none; align-items:center; justify-content:center; border-radius:10px; cursor:pointer; border:1px solid rgba(255,255,255,.06); background: linear-gradient(180deg, rgba(255,255,255,.02), transparent);
+    }
+    .hamburger .bar { width:20px; height:2px; background: #dbeafe; border-radius:2px; transition: transform .25s ease, opacity .2s ease; position:relative; }
+    .hamburger .bar::before, .hamburger .bar::after { content:""; position:absolute; left:0; width:20px; height:2px; background: inherit; border-radius:2px; transition: transform .25s ease, top .25s ease; }
+    .hamburger .bar::before { top:-6px; }
+    .hamburger .bar::after { top:6px; }
+
+    .mobile-nav {
+      position: fixed; inset: 0 0 auto 0; z-index: 150; height: 100vh; width: 100%;
+      background: linear-gradient(180deg, rgba(2,6,23,.95), rgba(2,6,23,.98));
+      transform: translateY(-100%); transition: transform .35s cubic-bezier(.2,.9,.2,1);
+      display:flex; flex-direction:column; padding: 72px 20px 20px; gap:20px;
+    }
+    .mobile-nav.open { transform: translateY(0%); }
+    .mobile-nav a { font-size:1.25rem; padding:12px 14px; border-radius:10px; display:block; color:var(--text); border:1px solid rgba(255,255,255,.03); background: rgba(255,255,255,.02); }
+    .mobile-nav .top { display:flex; align-items:center; justify-content:space-between; }
+    .mobile-nav .close { font-size:1.2rem; padding:8px 12px; border-radius:10px; cursor:pointer; }
+
+    /* ------------------------------
+       HERO
+    -------------------------------*/
+    .hero { display:grid; grid-template-columns: 1.25fr .75fr; gap: 28px; align-items:center; }
+    @media (max-width: 900px){ .hero { grid-template-columns: 1fr; } }
+
+    .tagline {
+      font-size: clamp(36px, 6vw, 72px);
+      line-height: .95;
+      letter-spacing: .5px;
+      background: linear-gradient(90deg, rgba(125,211,252,.95), rgba(167,139,250,.95), rgba(125,211,252,.95));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 10px 30px rgba(124,58,237,.15));
+      position: relative;
+      isolation: isolate;
+    }
+    .tagline::after{
+      content:""; position:absolute; inset: -8px -12px; z-index:-1;
+      background: radial-gradient(600px 200px at 10% 100%, rgba(124,58,237,.12), transparent 60%),
+                  radial-gradient(600px 200px at 100% 0%, rgba(14,165,233,.12), transparent 60%);
+      border-radius: 24px; filter: blur(20px); opacity:.7;
+    }
+    .hero-sub { margin-top: 10px; }
+
+    .hero-gallery { display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .hero-card { position:relative; border-radius: 18px; overflow:hidden; aspect-ratio: 4/3; background: var(--surface); border: 1px solid rgba(255,255,255,.08); transform: perspective(800px) rotateX(0) rotateY(0); transition: transform .3s ease, box-shadow .3s ease; box-shadow: var(--shadow); }
+    .hero-card img { width:100%; height:100%; object-fit: cover; filter: saturate(1.05) contrast(1.05); transform: scale(1.02); transition: transform .5s ease; }
+    .hero-card:hover { transform: perspective(900px) rotateX(6deg) rotateY(-6deg); box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+    .hero-card:hover img { transform: scale(1.08); }
+    .ribbon { position:absolute; left:10px; top:10px; padding:.35rem .7rem; border-radius: 999px; background: rgba(2,6,23,.6); border:1px solid rgba(255,255,255,.12); font-size:.8rem; color:#d1d5db; backdrop-filter: blur(10px); }
+
+    /* ------------------------------
+       VIDEO CATEGORIES
+    -------------------------------*/
+    .filters { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-bottom: 24px; }
+    .filters button { border:none; }
+    .grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 900px){ .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px){ .grid { grid-template-columns: 1fr; } }
+
+    .video-card { position:relative; overflow:hidden; border-radius: 16px; background: var(--surface); border: 1px solid rgba(255,255,255,.08); box-shadow: var(--shadow); cursor:pointer; }
+    .video-card video { width:100%; display:block; aspect-ratio: 16/9; object-fit:cover; transition: transform .5s ease, filter .5s ease; }
+    .video-card:hover video { transform: scale(1.03); filter: brightness(1.05) contrast(1.05); }
+    .video-card .meta { position:absolute; inset:auto 10px 10px 10px; display:flex; justify-content:space-between; align-items:center; }
+    .video-card .meta .pill { background: rgba(2,6,23,.6); border:1px solid rgba(255,255,255,.12); backdrop-filter: blur(10px); padding:.35rem .6rem; border-radius:999px; font-size:.78rem; color:#d1d5db; }
+    .hide { display:none !important; }
+
+    /* fullscreen video overlay */
+    .video-overlay {
+      position: fixed; inset:0; z-index: 99998; display:none; align-items:center; justify-content:center; background: rgba(0,0,0,.92);
+      padding: 20px;
+    }
+    .video-overlay.open { display:flex; }
+    .video-overlay .viewer {
+      width: min(1300px, 98vw); max-height: 92vh; background: transparent; display:flex; flex-direction:column; gap:12px; align-items:center;
+    }
+    .video-overlay video { width:100%; height:auto; max-height: 86vh; border-radius: 10px; background:#000; outline: none; }
+    .video-overlay .controls { display:flex; gap:8px; align-items:center; }
+    .video-overlay .close { font-size:1rem; padding:.5rem .8rem; border-radius:8px; cursor:pointer; border:1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.02); }
+
+    /* ------------------------------
+       MINIMAL BANNER
+    -------------------------------*/
+    .banner { position:relative; overflow: hidden; display:grid; grid-template-columns: 1.2fr .8fr; align-items:center; gap: 18px; padding: 28px; }
+    @media (max-width: 900px){ .banner { grid-template-columns: 1fr; } }
+    .banner::before { content:""; position:absolute; inset:-20%; background: radial-gradient(500px 200px at 40% 110%, rgba(125,211,252,.15), transparent 60%);
+      filter: blur(30px); opacity:.7; }
+    .banner h3 { margin:0 0 8px; font-size: clamp(22px, 4vw, 34px); }
+    .banner p { margin:0 0 16px; }
+    .portrait { border-radius: 20px; overflow:hidden; border:1px solid rgba(255,255,255,.08); box-shadow: var(--shadow); }
+
+    /* properly styled banner CTAs */
+    .banner-ctas { display:flex; gap:.6rem; margin-top:14px; flex-wrap:wrap; }
+    .banner-ctas a, .banner-ctas button { min-width: 150px; text-align:center; }
+
+    /* ------------------------------
+       CONTACT & SOCIALS
+    -------------------------------*/
+    .contact { display:grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 900px){ .contact { grid-template-columns: 1fr; } }
+
+    .contact-card { padding: 20px; display:grid; gap:14px; }
+    .contact-item { display:flex; align-items:center; gap:.8rem; padding:.8rem 1rem; border-radius: 14px; background: linear-gradient(180deg, var(--surface), transparent); border:1px solid rgba(255,255,255,.08); }
+
+    .socials { padding: 20px; display:grid; gap: 14px; }
+    .social-box { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 600px){ .social-box { grid-template-columns: 1fr; } }
+
+    .ig-card { position:relative; padding: 16px; border-radius: 16px; background: linear-gradient(180deg, var(--surface), transparent); border:1px solid rgba(255,255,255,.08); overflow:hidden; }
+    .ig-card::after { content:""; position:absolute; right:-30px; top:-30px; width:160px; height:160px; background: radial-gradient(closest-side, rgba(167,139,250,.25), transparent); filter: blur(8px); }
+    .ig-title { font-weight:600; margin: 2px 0 6px; }
+    .ig-handle { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; color: var(--accent); }
+
+    /* ------------------------------
+       END TEXT & FOOTER
+    -------------------------------*/
+    .endmark {
+      margin-top: 60px; text-align:center; font-size: clamp(26px, 5vw, 40px);
+      color: rgba(255,255,255,.22); letter-spacing: .8px;
+      text-shadow: 0 2px 0 rgba(255,255,255,.08), 0 18px 40px rgba(124,58,237,.25);
+      -webkit-text-stroke: .5px rgba(255,255,255,.16);
+    }
+    footer { text-align:center; padding: 26px 0 60px; color: var(--muted); font-size: .92rem; }
+
+    /* ------------------------------
+       SCROLL TO TOP FAB
+    -------------------------------*/
+    #toTop { position: fixed; right: 18px; bottom: 18px; z-index: 40; opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity .25s ease, transform .25s ease; }
+    #toTop.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .arrow { width: 46px; height: 46px; border-radius: 999px; display:grid; place-items:center; background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.12); box-shadow: var(--shadow); cursor:pointer; animation: bob 2.2s ease-in-out infinite; }
+    @keyframes bob { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-6px);} }
+
+    /* ------------------------------
+       REVEAL ANIMATIONS (on view)
+    -------------------------------*/
+    .reveal { opacity:0; transform: translateY(16px) scale(.98); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.on { opacity:1; transform: translateY(0) scale(1); }
+
+    /* small screen adjustments */
+    @media (max-width: 920px) {
+      .nav-links { display:none; }
+      .hamburger { display:flex; }
+      .controls .btn { display:none; } /* move primary CTAs into mobile nav */
+      header { padding-inline: 8px; }
+      .section { padding: 48px 0; }
+    }
+
+    @media (max-width: 500px) {
+      .brand h1 { font-size: 16px; }
+      .hamburger { width:40px; height:36px; }
+      .spinner-3d { width:120px; height:120px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ==============================
+       LOADER OVERLAY (UPGRADED)
+  =============================== -->
+  <div id="loader" aria-hidden="true">
+    <div class="spinner-wrap" role="status" aria-live="polite">
+      <div class="spinner-3d" aria-hidden="true">
+        <div class="ring" aria-hidden="true"></div>
+        <div class="frame">
+          <div class="spinner" role="none" aria-hidden="true"></div>
+          <div class="photo" aria-hidden="true">
+            <!-- use the photographer image inside loader; keeps it optional if missing -->
+            <img src="Dip.jpg" alt="Dipanshu Nonare" onerror="this.style.display='none'" />
+          </div>
+        </div>
+      </div>
+      <div class="loader-text">Loading DN Portfolio…</div>
+    </div>
+  </div>
+
+  <!-- ==============================
+       HEADER / NAVBAR
+  =============================== -->
+  <header>
+    <div class="container nav">
+      <a href="#home" class="brand" aria-label="Home">
+        <div class="brand-logo">
+          <!-- Replace with Dipanshu photo -->
+          <img src="Dip.jpg" alt="Dipanshu Nonare" />
+        </div>
+        <h1>Dipanshu <span>Nonare</span></h1>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#work">Work</a>
+        <a href="#videos">Videos</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="controls">
+        <button class="btn" id="bookBtn" aria-controls="contact" aria-label="Book Me">📸 Book Me</button>
+        <div class="toggle" id="themeToggle" role="switch" aria-checked="false" aria-label="Toggle light/dark">
+          <div class="dot"></div>
+        </div>
+
+        <!-- hamburger mobile nav -->
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+          <span class="bar" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile nav panel -->
+    <div id="mobileNav" class="mobile-nav" aria-hidden="true">
+      <div class="top">
+        <div style="display:flex; align-items:center; gap:.6rem;">
+          <div class="brand-logo" style="width:44px;height:44px;">
+            <img src="Dip.jpg" alt="" />
+          </div>
+          <div>
+            <div style="font-weight:600;">Dipanshu <span style="color:var(--accent)">Nonare</span></div>
+            <div style="font-size:.85rem; color:var(--muted)">Photography • Films</div>
+          </div>
+        </div>
+        <button class="close" id="mobileClose" aria-label="Close menu">✕</button>
+      </div>
+
+      <a href="#work" data-target="#work">Work</a>
+      <a href="#videos" data-target="#videos">Videos</a>
+      <a href="#about" data-target="#about">About</a>
+      <a href="#contact" data-target="#contact">Contact</a>
+
+      <div style="margin-top:auto; display:flex; gap:8px;">
+        <button class="btn" id="mobileBook">📸 Book Me</button>
+        <button class="btn ghost" id="mobilePortfolio">🖼️ See Portfolio</button>
+      </div>
+
+    </div>
+  </header>
+
+  <main id="home">
+    <!-- ==============================
+         HERO
+    =============================== -->
+    <section class="section container">
+      <div class="hero">
+        <div>
+          <div class="chip">Photography • Weddings • Portraits • Films</div>
+          <h2 class="tagline">Capturing moments,<br/> crafting stories in light.</h2>
+          <p class="para hero-sub">Hi, I'm <strong>Dipanshu Nonare</strong> — a photographer & editor. I create cinematic wedding films, intimate portraits, and vibrant product visuals that feel alive.</p>
+          <div style="display:flex; gap:.6rem; margin-top:16px; flex-wrap:wrap;">
+            <a class="btn" href="#videos">🎞️ Explore Edits</a>
+            <a class="btn ghost" href="#work">🖼️ View Photos</a>
+          </div>
+        </div>
+        <div class="hero-gallery reveal">
+          <figure class="hero-card">
+            <img src="pic1.jpeg" alt="Wedding portrait by Dipanshu"/>
+            <figcaption class=""></figcaption>
+          </figure>
+          <figure class="hero-card">
+            <img src="pic2.jpeg" alt="Fashion portrait"/>
+            <figcaption class=""></figcaption>
+          </figure>
+          <figure class="hero-card">
+            <img src="pic3.jpeg" alt="Product shoot"/>
+            <figcaption class=""></figcaption>
+          </figure>
+          <figure class="hero-card">
+            <img src="pic4.jpeg" alt="Event coverage"/>
+            <figcaption class=""></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================
+         PHOTO SHOWCASE (WORK)
+    =============================== -->
+    <section id="work" class="section container reveal">
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <div>
+          <h3 class="title">Featured Photography</h3>
+          <p class="para">A curated selection across weddings, portraits, events, and product stories.</p>
+        </div>
+        <div class="chip">High-res • Optimized • Responsive</div>
+      </div>
+      <div class="grid" style="margin-top:18px;">
+        <figure class="video-card"><img src="f1.jpeg" alt="Wedding couple"/></figure>
+        <figure class="video-card"><img src="f2.jpeg" alt="Portrait in studio"/></figure>
+        <figure class="video-card"><img src="f3.jpeg" alt="Candid moment"/></figure>
+        <figure class="video-card"><img src="f4.jpeg" alt="Product flatlay"/></figure>
+        <figure class="video-card"><img src="f5.jpeg" alt="Outdoor event"/></figure>
+        <figure class="video-card"><img src="f6.jpeg" alt="Landscape scene"/></figure>
+      </div>
+    </section>
+
+    <!-- ==============================
+         VIDEO CATEGORIES
+    =============================== -->
+    <section id="videos" class="section container reveal">
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <div>
+          <h3 class="title">Cinematic Video Edits</h3>
+          <p class="para">Explore categories: Slow Edit • Wedding Edit • Event</p>
+        </div>
+        <div class="filters" role="tablist" aria-label="Video categories">
+          <button class="btn chip" data-filter="all" role="tab" aria-selected="true">All</button>
+          <button class="btn chip" data-filter="slow">Slow Edit</button>
+          <button class="btn chip" data-filter="wedding">Wedding Edit</button>
+          <button class="btn chip" data-filter="fashion">Fashion</button>
+          <!-- <button class="btn chip" data-filter="travel">Travel</button>
+          <button class="btn chip" data-filter="product">Product</button> -->
+          <button class="btn chip" data-filter="event">Event</button>
+        </div>
+      </div>
+
+      <div class="grid" id="videoGrid" aria-live="polite">
+        <!-- Example card; replace src with your MP4 paths -->
+        <article class="video-card" data-category="slow" tabindex="0">
+          <video src="vid1 (4).mp4" preload="metadata" muted loop playsinline></video>
+          <div class="meta"><span class="pill">Slow Edit</span><span class="pill">02</span></div>
+        </article>
+        <article class="video-card" data-category="slow" tabindex="0">
+          <video src="vid1 (2).mp4" preload="metadata" muted loop playsinline></video>
+          <div class="meta"><span class="pill">Slow Edit</span><span class="pill">03</span></div>
+        </article>
+
+        <article class="video-card" data-category="wedding" tabindex="0">
+          <video src="vid1 (3).mp4" preload="metadata" muted loop playsinline></video>
+          <div class="meta"><span class="pill">Wedding</span><span class="pill">01</span></div>
+        </article>
+
+        <article class="video-card" data-category="event" tabindex="0">
+          <video src="vid1 (1).mp4" preload="metadata" muted loop playsinline></video>
+          <div class="meta"><span class="pill">Event</span><span class="pill">01</span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- fullscreen video viewer overlay -->
+    <div id="videoOverlay" class="video-overlay" aria-hidden="true">
+      <div class="viewer" role="dialog" aria-modal="true" aria-label="Video viewer">
+        <video id="overlayVideo" controls playsinline></video>
+        <div class="controls">
+          <button class="close" id="overlayClose" aria-label="Close viewer">Close</button>
+          <button class="close" id="overlayFullscreen" aria-label="Enter fullscreen">Fullscreen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==============================
+         MINIMAL HERO BANNER
+    =============================== -->
+    <section id="about" class="section container reveal">
+      <div class="glass banner">
+        <div>
+          <h3>Make your moments unforgettable.</h3>
+          <p class="para">From intimate vows to grand celebrations, I blend storytelling with color, texture, and motion. Let’s plan visuals that feel timeless — and entirely yours.</p>
+          <div class="banner-ctas">
+            <!-- Updated: use meaningful IDs and proper anchors (these will be handled by JS) -->
+            <button class="btn" id="bannerBook">Book a Shoot</button>
+            <button class="btn ghost" id="bannerPortfolio">See Portfolio</button>
+          </div>
+        </div>
+        <div class="portrait">
+          <!-- Replace with a clean cut-out or creative portrait -->
+          <img src="Dip.jpg" alt="Portrait of Dipanshu Nonare"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==============================
+         CONTACT + SOCIALS
+    =============================== -->
+    <section id="contact" class="section container reveal">
+      <h3 class="title" style="margin-bottom:14px;">Contact</h3>
+      <div class="contact">
+        <div class="glass contact-card">
+          <div class="contact-item"><strong>📍 Location:</strong> <span class="subtle">Nagpur, Maharashtra, India</span></div>
+          <div class="contact-item"><strong>📞 Phone:</strong> <a href="tel:+91-9876543210">+91 7276221967</a></div>
+          <div class="contact-item"><strong>✉️ Email:</strong> <a href="mailto:dipanshu.nonare@example.com">dipanshu.nonare@example.com</a></div>
+          <div class="contact-item"><strong>🕘 Availability:</strong> <span class="subtle">Mon–Sun • 9am–9pm IST</span></div>
+        </div>
+
+        <div class="glass socials">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+            <div>
+              <div class="chip">Instagram • Reels • Edits</div>
+              <h4 style="margin:6px 0 0;">Social Accounts</h4>
+              <p class="para" style="margin:6px 0 0;">Tap a card to open the profile.</p>
+            </div>
+            <div class="chip">Direct Links</div>
+          </div>
+          <div class="social-box">
+            <a class="ig-card" href="https://www.instagram.com/luckyzzz__ak47?igsh=MXJ5bWs0OGN2enE5aQ==" target="_blank" rel="noreferrer noopener">
+              <div class="ig-title">Main Account</div>
+              <div class="ig-handle">@luckyzzz__ak47</div>
+              <div class="subtle">Weddings • Portraits • Client work</div>
+            </a>
+            <a class="ig-card" href="https://www.instagram.com/luckyeditzz___?igsh=MXFzMmt4ZmsyMG92Zw==" target="_blank" rel="noreferrer noopener">
+              <div class="ig-title">Editing Account</div>
+              <div class="ig-handle">@luckyeditzz</div>
+              <div class="subtle">Slow edits • Transitions • LUTs</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="endmark">DN Photography</div>
+    </section>
+
+    <footer class="container">
+      Copyright © Dipanshu Nonare
+    </footer>
+  </main>
+
+  <!-- ==============================
+       SCROLL TO TOP BUTTON
+  =============================== -->
+  <div id="toTop"><button class="arrow" aria-label="Back to top">⬆</button></div>
+
+  <script>
+    // ------------------------------
+    // Utility: nav hover spotlight
+    // ------------------------------
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('pointermove', e => {
+        const r = a.getBoundingClientRect();
+        a.style.setProperty('--x', (e.clientX - r.left) + 'px');
+      });
+    });
+
+    // ------------------------------
+    // Loader: improved (intense black + image + 3D spinner)
+    // ------------------------------
+    // Keep a small, snappy delay for polish. Fade faster for perceived speed.
+    (function(){
+      const loader = document.getElementById('loader');
+      // If images are large, consider waiting until main image is loaded. For now use window 'load' but ensure quick hide if already loaded.
+      const hide = () => {
+        if (!loader) return;
+        loader.classList.add('fade-out');
+        // ensure it's removed after animation to restore pointer events
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 500);
+      };
+
+      // If page already loaded
+      if (document.readyState === 'complete') {
+        setTimeout(hide, 220);
+      } else {
+        window.addEventListener('load', () => {
+          // small delay for the nice breathing animation, but keep it fast
+          setTimeout(hide, 220);
+        }, { once: true });
+        // Also, if load takes too long, fallback to hide after 3s
+        setTimeout(() => {
+          if (loader && getComputedStyle(loader).display !== 'none') hide();
+        }, 3000);
+      }
+    })();
+
+    // ------------------------------
+    // Theme Toggle (dark / light)
+    // ------------------------------
+    const themeToggle = document.getElementById('themeToggle');
+    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+    const saved = localStorage.getItem('theme');
+    const setTheme = (mode) => {
+      document.documentElement.classList.toggle('light', mode === 'light');
+      themeToggle?.setAttribute('aria-checked', mode === 'light');
+      localStorage.setItem('theme', mode);
+    };
+    setTheme(saved || (prefersLight ? 'light' : 'dark'));
+    themeToggle?.addEventListener('click', () => {
+      const next = document.documentElement.classList.contains('light') ? 'dark' : 'light';
+      setTheme(next);
+    });
+
+    // ------------------------------
+    // "Book Me" CTA -> scroll to contact
+    // ------------------------------
+    document.getElementById('bookBtn')?.addEventListener('click', () => {
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // ------------------------------
+    // Banner CTAs: fixed to open proper sections
+    // ------------------------------
+    const scrollToSmooth = (selector) => {
+      const el = document.querySelector(selector);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    // Banner buttons
+    document.getElementById('bannerBook')?.addEventListener('click', () => scrollToSmooth('#contact'));
+    document.getElementById('bannerPortfolio')?.addEventListener('click', () => scrollToSmooth('#work'));
+    // Mobile nav CTAs
+    document.getElementById('mobileBook')?.addEventListener('click', () => {
+      scrollToSmooth('#contact'); toggleMobileNav(false);
+    });
+    document.getElementById('mobilePortfolio')?.addEventListener('click', () => {
+      scrollToSmooth('#work'); toggleMobileNav(false);
+    });
+
+    // ------------------------------
+    // Mobile navigation open/close
+    // ------------------------------
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileClose = document.getElementById('mobileClose');
+    const toggleMobileNav = (open) => {
+      if (!mobileNav) return;
+      const isOpen = mobileNav.classList.contains('open');
+      const next = typeof open === 'boolean' ? open : !isOpen;
+      mobileNav.classList.toggle('open', next);
+      mobileNav.setAttribute('aria-hidden', !next);
+      hamburger?.setAttribute('aria-expanded', String(next));
+      if (next) {
+        // trap focus simply by focusing the first link
+        const first = mobileNav.querySelector('a, button');
+        first?.focus();
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+        hamburger?.focus();
+      }
+    };
+    hamburger?.addEventListener('click', () => toggleMobileNav(true));
+    mobileClose?.addEventListener('click', () => toggleMobileNav(false));
+    // close mobile nav on link click
+    mobileNav?.querySelectorAll('a[data-target]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const t = a.getAttribute('data-target') || a.getAttribute('href');
+        toggleMobileNav(false);
+        setTimeout(() => scrollToSmooth(t), 220);
+      });
+    });
+
+    // ------------------------------
+    // Reveal on view
+    // ------------------------------
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => entry.isIntersecting && entry.target.classList.add('on'));
+    }, { threshold: .125 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // ------------------------------
+    // Video grid: category filters & hover play
+    // ------------------------------
+    const grid = document.getElementById('videoGrid');
+    const filterBtns = document.querySelectorAll('[data-filter]');
+    const applyFilter = (cat) => {
+      document.querySelectorAll('#videos [role=tab]').forEach(b => b.setAttribute('aria-selected','false'));
+      document.querySelector(`[data-filter="${cat}"]`)?.setAttribute('aria-selected','true');
+      grid.querySelectorAll('.video-card').forEach(card => {
+        const c = card.getAttribute('data-category');
+        if(cat === 'all' || c === cat) card.classList.remove('hide'); else card.classList.add('hide');
+      });
+    };
+    filterBtns.forEach(b => b.addEventListener('click', () => applyFilter(b.dataset.filter)));
+    applyFilter('all');
+
+    // Hover to play / pause (mobile-safe fallback: tap)
+    grid.querySelectorAll('.video-card').forEach(card => {
+      const v = card.querySelector('video');
+      if(!v) return;
+      // pointer hover for desktop
+      const play = async () => { try { v.muted = false; await v.play(); } catch(e){} };
+      const pause = () => { try{ v.pause(); v.currentTime = 0; }catch(e){} };
+
+      // hover handling (non-touch)
+      card.addEventListener('pointerenter', (e) => {
+        if (e.pointerType === 'touch') return;
+        v.muted = true; v.play().catch(()=>{});
+      });
+      card.addEventListener('pointerleave', () => {
+        if (!v.paused) { v.pause(); v.currentTime = 0; }
+      });
+
+      // click/tap opens fullscreen viewer (full-size playback)
+      card.addEventListener('click', async (e) => {
+        // if user clicked a small control inside, ignore; otherwise open viewer
+        const src = v.getAttribute('src') || v.currentSrc;
+        if(!src) return;
+        openVideoViewer(src);
+      });
+
+      // keyboard accessibility: Enter opens viewer
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const src = v.getAttribute('src') || v.currentSrc;
+          if(!src) return;
+          openVideoViewer(src);
+        }
+      });
+    });
+
+    // ------------------------------
+    // Fullscreen / overlay video viewer
+    // ------------------------------
+    const overlay = document.getElementById('videoOverlay');
+    const overlayVideo = document.getElementById('overlayVideo');
+    const overlayClose = document.getElementById('overlayClose');
+    const overlayFullscreen = document.getElementById('overlayFullscreen');
+
+    async function openVideoViewer(src) {
+      if(!overlay || !overlayVideo) return;
+      overlayVideo.pause();
+      overlayVideo.src = src;
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+      // remove muted so user hears audio
+      overlayVideo.muted = false;
+      try {
+        await overlayVideo.play();
+      } catch (e) {
+        // autoplay may be blocked — that's fine, user can press play
+      }
+      // try request fullscreen on mobile where possible (do not force)
+      try {
+        // give short timeout to ensure play has started on some browsers
+        setTimeout(() => {
+          // do not force fullscreen — provide button
+        }, 60);
+      } catch(e){}
+      // trap ESC to close
+      document.addEventListener('keydown', handleEscClose);
+    }
+
+    function closeVideoViewer() {
+      if(!overlay || !overlayVideo) return;
+      overlayVideo.pause();
+      try { overlayVideo.removeAttribute('src'); overlayVideo.load(); } catch(e){}
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden','true');
+      document.removeEventListener('keydown', handleEscClose);
+    }
+
+    function handleEscClose(e) {
+      if (e.key === 'Escape') closeVideoViewer();
+    }
+
+    overlayClose?.addEventListener('click', closeVideoViewer);
+    overlay?.addEventListener('click', (e) => {
+      if (e.target === overlay) closeVideoViewer();
+    });
+    overlayFullscreen?.addEventListener('click', async () => {
+      if (!overlayVideo) return;
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(()=>{});
+        return;
+      }
+      try {
+        if (overlayVideo.requestFullscreen) await overlayVideo.requestFullscreen();
+        else if (overlayVideo.webkitEnterFullscreen) overlayVideo.webkitEnterFullscreen();
+      } catch (err) {
+        // ignore fullscreen errors
+      }
+    });
+
+    // ------------------------------
+    // Scroll to top button
+    // ------------------------------
+    const toTop = document.getElementById('toTop');
+    const showFab = () => {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      toTop.classList.toggle('show', y > 600);
+    };
+    showFab();
+    window.addEventListener('scroll', showFab, { passive: true });
+    toTop.querySelector('button').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // ------------------------------
+    // Accessibility & small improvements
+    // ------------------------------
+    // ensure links that are anchors scroll smoothly from all places
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if (!href || href === '#') return;
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // close mobile nav if open
+          if (mobileNav && mobileNav.classList.contains('open')) toggleMobileNav(false);
+        }
+      });
+    });
+
+    // small performance tips built into code:
+    // - Avoid heavy repaints on scroll
+    // - Use passive listeners where possible (used above)
+    // - Use CSS animations for loader & spinner (done in CSS)
+    // - Don't block on fonts/images (loader fallback hides after 3s)
+  </script>
+</body>
+</html>
